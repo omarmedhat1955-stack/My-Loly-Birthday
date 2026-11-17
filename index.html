@@ -1,0 +1,747 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>عيد ميلاد سعيد يا لولتي ✨</title>
+    <!-- تحميل خط كايرو وتجوال لجمال الخط العربي -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&family=Tajawal:wght@400;500;700&display=swap" rel="stylesheet">
+    <!-- مكتبة Tailwind CSS للتصميم المتجاوب -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- مكتبة Tone.js لتوليد موسيقى عيد الميلاد -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <!-- مكتبة Canvas Confetti للاحتفال -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    
+    <style>
+        body {
+            font-family: 'Cairo', 'Tajawal', sans-serif;
+            background: linear-gradient(135deg, #fff0f5 0%, #ffe4e1 50%, #fdf2f8 100%);
+            min-height: 100vh;
+            overflow-x: hidden;
+            color: #4a2c38;
+            position: relative;
+        }
+
+        /* إيموشنز متطايرة في الخلفية */
+        .floating-emojis {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+        .floating-emoji {
+            position: absolute;
+            bottom: -50px;
+            opacity: 0.55;
+            animation: floatUp linear infinite;
+            user-select: none;
+        }
+        @keyframes floatUp {
+            0% {
+                transform: translateY(0) rotate(0deg) scale(0.9);
+                opacity: 0;
+            }
+            15% {
+                opacity: 0.6;
+            }
+            85% {
+                opacity: 0.6;
+            }
+            100% {
+                transform: translateY(-115vh) rotate(360deg) scale(1.1);
+                opacity: 0;
+            }
+        }
+
+        /* تصميم التورتة التفاعلية المحسنة */
+        .cake-container {
+            position: relative;
+            width: 260px;
+            height: 230px;
+            margin: 0 auto;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .cake-container:hover {
+            transform: scale(1.03);
+        }
+        .plate {
+            width: 280px;
+            height: 18px;
+            background: linear-gradient(to right, #cbd5e1, #f8fafc, #cbd5e1);
+            border-radius: 50%;
+            position: absolute;
+            bottom: 0;
+            left: -10px;
+            box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
+            border-bottom: 3px solid #94a3b8;
+        }
+        .layer {
+            position: absolute;
+            border-radius: 16px 16px 6px 6px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: inset 0 -6px 0 rgba(0,0,0,0.08), 0 4px 10px rgba(236, 72, 153, 0.15);
+        }
+        .layer-bottom {
+            width: 240px;
+            height: 68px;
+            bottom: 14px;
+            background: linear-gradient(to right, #db2777, #f472b6, #db2777);
+        }
+        .layer-middle {
+            width: 185px;
+            height: 58px;
+            bottom: 82px;
+            background: linear-gradient(to right, #ec4899, #f9a8d4, #ec4899);
+        }
+        .layer-top {
+            width: 130px;
+            height: 50px;
+            bottom: 140px;
+            background: linear-gradient(to right, #f472b6, #fbcfe8, #f472b6);
+        }
+        /* الكريمة السائحة المحسنة */
+        .icing {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 16px 16px 10px 10px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+        }
+        .icing::after {
+            content: '';
+            position: absolute;
+            bottom: -7px;
+            left: 8%;
+            width: 84%;
+            height: 12px;
+            background: radial-gradient(circle at 12px 0, #ffffff 10px, transparent 11px);
+            background-size: 24px 12px;
+        }
+        /* حبيبات الزينة (Sprinkles) */
+        .sprinkles {
+            position: absolute;
+            inset: 0;
+            background-image: 
+                radial-gradient(#fde047 2px, transparent 2px),
+                radial-gradient(#38bdf8 2px, transparent 2px),
+                radial-gradient(#fb7185 2px, transparent 2px);
+            background-size: 32px 32px;
+            background-position: 0 0, 12px 16px, 22px 8px;
+            opacity: 0.75;
+            border-radius: inherit;
+            pointer-events: none;
+        }
+        /* الكرز فوق التورتة */
+        .cherry {
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            background: radial-gradient(circle at 30% 30%, #ff4d6d, #9f1239);
+            border-radius: 50%;
+            bottom: 188px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            z-index: 9;
+        }
+        .cherry-left { left: 78px; }
+        .cherry-right { right: 78px; }
+
+        /* الشمعة */
+        .candle {
+            position: absolute;
+            width: 14px;
+            height: 44px;
+            background: repeating-linear-gradient(45deg, #fff, #fff 5px, #fbbf24 5px, #fbbf24 10px);
+            bottom: 190px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            z-index: 10;
+        }
+        /* اللهب */
+        .flame {
+            position: absolute;
+            width: 18px;
+            height: 28px;
+            background: radial-gradient(ellipse at bottom, #fff 0%, #fef08a 40%, #f97316 90%);
+            border-radius: 50% 50% 20% 20%;
+            bottom: 236px;
+            left: 50%;
+            transform: translateX(-50%);
+            box-shadow: 0 0 18px #f59e0b, 0 0 35px #fbbf24;
+            animation: flicker 0.6s infinite alternate;
+            transition: opacity 0.4s ease, transform 0.4s ease;
+            z-index: 11;
+        }
+        .flame.out {
+            opacity: 0;
+            transform: translateX(-50%) scale(0);
+            animation: none;
+        }
+        @keyframes flicker {
+            0% { transform: translateX(-50%) scale(1) rotate(-2deg); }
+            100% { transform: translateX(-50%) scale(1.08) rotate(2deg); }
+        }
+
+        /* تصميم الكارت الواحد المتقلب (برطمان الحب) */
+        .single-flip-card {
+            perspective: 1200px;
+            height: 230px;
+            cursor: pointer;
+            user-select: none;
+        }
+        .single-flip-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.65s cubic-bezier(0.4, 0.2, 0.2, 1);
+            transform-style: preserve-3d;
+        }
+        .single-flip-card.flipped .single-flip-inner {
+            transform: rotateY(180deg);
+        }
+        .single-card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 1.75rem;
+            box-shadow: 0 15px 35px -5px rgba(236, 72, 153, 0.2);
+        }
+        .single-card-front {
+            background: linear-gradient(135deg, #ffffff 0%, #fff1f2 100%);
+            border: 2px solid #fbcfe8;
+        }
+        .single-card-back {
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+            color: white;
+            transform: rotateY(180deg);
+            border: 2px solid #f472b6;
+        }
+
+        /* تصميم الظرف السري */
+        .envelope-wrapper {
+            cursor: pointer;
+            transition: transform 0.3s ease;
+        }
+        .envelope-wrapper:hover {
+            transform: translateY(-5px);
+        }
+        .wax-seal {
+            width: 56px;
+            height: 56px;
+            background: radial-gradient(circle at 30% 30%, #fbbf24, #d97706);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.4);
+            border: 2px solid #fef3c7;
+            transition: transform 0.3s ease;
+        }
+        .envelope-wrapper:hover .wax-seal {
+            transform: scale(1.1);
+        }
+
+        /* تأثير نبض خفيف */
+        @keyframes pulse-soft {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.04); }
+        }
+        .animate-pulse-soft {
+            animation: pulse-soft 2.5s infinite;
+        }
+    </style>
+</head>
+<body class="antialiased selection:bg-pink-200 selection:text-pink-900">
+
+    <!-- حاوية الإيموشنز المتطايرة في الخلفية -->
+    <div id="floating-emojis" class="floating-emojis"></div>
+
+    <!-- حاوية الصفحة الرئيسية -->
+    <div class="relative z-10 max-w-3xl mx-auto px-4 py-8 sm:py-12 space-y-12">
+
+        <!-- 1. الترويسة والعنوان الرئيسي -->
+        <header class="text-center space-y-3">
+            <div class="inline-block px-4 py-1.5 rounded-full bg-pink-100/90 backdrop-blur-sm text-pink-700 text-sm font-bold shadow-sm">
+                ✨ يوم مميز لأغلى واجمل واحده في الدنيا ✨
+            </div>
+            <h1 class="text-3xl sm:text-5xl font-black text-transparent bg-clip-text bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 py-2">
+                عيد ميلاد سعيد يالولتي 🎂💖
+            </h1>
+            <p class="text-gray-600 text-base sm:text-lg max-w-md mx-auto leading-relaxed">
+                النهاردة يومك إنتي وبس.. اتمني أمنية حلوة واطفي الشمعة عشان نبدأ الاحتفال 🕯️✨
+            </p>
+        </header>
+
+        <!-- 2. قسم تورتة عيد الميلاد التفاعلية -->
+        <section class="bg-white/85 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-pink-100 text-center space-y-6">
+            <div class="pt-6 pb-2">
+                <div class="cake-container" id="cake" onclick="blowCandle()">
+                    <!-- اللهب -->
+                    <div class="flame" id="flame"></div>
+                    <!-- الشمعة -->
+                    <div class="candle"></div>
+                    <!-- كرز التزيين -->
+                    <div class="cherry cherry-left"></div>
+                    <div class="cherry cherry-right"></div>
+                    <!-- طبقات التورتة -->
+                    <div class="layer layer-top">
+                        <div class="sprinkles"></div>
+                        <div class="icing"></div>
+                    </div>
+                    <div class="layer layer-middle">
+                        <div class="sprinkles"></div>
+                        <div class="icing"></div>
+                        <span class="absolute inset-0 flex items-center justify-center text-white font-black text-base pt-4 tracking-wider drop-shadow" dir="ltr">
+                            My Loly ❤️
+                        </span>
+                    </div>
+                    <div class="layer layer-bottom">
+                        <div class="sprinkles"></div>
+                        <div class="icing"></div>
+                    </div>
+                    <div class="plate"></div>
+                </div>
+            </div>
+
+            <!-- زر واحد للنفخ في المايك + إمكانية الضغط على التورتة -->
+            <div class="space-y-3">
+                <p id="cake-instruction" class="text-pink-600 font-bold text-sm sm:text-base animate-pulse-soft">
+                    👆 دوسي على التورتة مباشرة أو شغّلي المايك وانفخي في الشمعة 🌬️
+                </p>
+                
+                <div class="flex items-center justify-center">
+                    <button onclick="enableMic()" id="mic-btn" class="px-6 py-3 rounded-full bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold text-sm sm:text-base shadow-md hover:shadow-lg transform hover:-translate-y-0.5 transition flex items-center gap-2">
+                        <span>انفخي في المايك لإطفاء الشمعة</span> 🎙️🌬️
+                    </button>
+                </div>
+            </div>
+
+            <!-- رسالة ما بعد إطفاء الشمعة (مخفية في البداية) -->
+            <div id="birthday-wish-box" class="hidden pt-4 border-t border-pink-100 space-y-2 transition-all duration-500">
+                <h2 class="text-2xl font-black text-pink-600">كل سنة وإنتي طيبة يابيبي! 🎉🥳❤️</h2>
+                <p class="text-gray-700 font-medium">يارب سنة جديدة كلها فرحة وراحة بال وتحقيق لكل اللي بتتمنيه يا أغلى الناس ✨🌸</p>
+            </div>
+        </section>
+
+        <!-- 3. قسم برطمان "حاجات بحبها فيكي" (كارت واحد يتقلب بالتتابع) -->
+        <section class="space-y-6">
+            <div class="text-center space-y-2">
+                <h2 class="text-2xl sm:text-3xl font-black text-gray-800">
+                    حاجات بحبها فيكي 💌✨
+                </h2>
+                <p class="text-gray-600 text-sm sm:text-base">
+                    اضغطي على الكارت عشان يتقلب ويطلعلك سبب جديد في كل مرة 💕
+                </p>
+            </div>
+
+            <!-- الكارت الواحد التفاعلي -->
+            <div class="max-w-md mx-auto">
+                <div id="love-jar-card" class="single-flip-card" onclick="flipLoveCard()">
+                    <div class="single-flip-inner">
+                        <!-- الوجه الأمامي -->
+                        <div class="single-card-face single-card-front">
+                            <span class="text-4xl mb-2">🫙💖</span>
+                            <h3 id="card-front-title" class="font-black text-pink-600 text-xl">برطمان الذكريات والحب</h3>
+                            <p id="card-front-subtitle" class="text-gray-500 text-sm mt-1">اضغطي هنا عشان تفتحي أول رسالة ✨</p>
+                            <span id="card-counter-front" class="mt-3 px-3 py-1 rounded-full bg-pink-100 text-pink-700 text-xs font-bold">
+                                1 / 12
+                            </span>
+                        </div>
+                        <!-- الوجه الخلفي -->
+                        <div class="single-card-face single-card-back">
+                            <span id="card-counter-back" class="px-3 py-0.5 rounded-full bg-white/20 text-white text-xs font-bold mb-3">
+                                سبب #1 من 12 💖
+                            </span>
+                            <p id="card-reason-text" class="font-bold text-base sm:text-lg leading-relaxed">
+                                <!-- النص يتغير تلقائياً -->
+                            </p>
+                            <span class="text-xs text-pink-100 mt-4">اضغطي تاني لسبب جديد ↻✨</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. ظرف القصيدة الجديدة (مضاف هنا قبل الرسالة الأساسية مباشرة) -->
+        <section class="pt-2 pb-2">
+            <!-- حالة الظرف المغلق للقصيدة -->
+            <div id="closed-poem-envelope" onclick="openPoemEnvelope()" class="envelope-wrapper bg-gradient-to-br from-amber-100 via-rose-50 to-pink-50 rounded-3xl p-8 sm:p-10 border-2 border-dashed border-rose-300 shadow-lg text-center space-y-4">
+                <div class="wax-seal mx-auto">
+                    <span class="text-2xl">📜</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-800">
+                    قصيدة خاصة لعيونك ✨
+                </h3>
+                <p class="text-rose-600 font-bold text-sm">
+                    اضغطي هنا لفتح قصيدة العشق والقلب 💌
+                </p>
+            </div>
+
+            <!-- حالة القصيدة المفتوحة (مخفية في البداية) -->
+            <div id="opened-poem-letter" class="hidden bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-rose-200 space-y-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-rose-100 rounded-bl-full opacity-50"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-amber-100 rounded-tr-full opacity-50"></div>
+                
+                <div class="relative z-10 space-y-4 text-right leading-loose text-gray-700 text-base sm:text-lg whitespace-pre-line">
+                    <div class="flex items-center justify-between border-b border-rose-100 pb-3">
+                        <span class="font-black text-rose-600 text-xl">قصيدة القلب 💖</span>
+                        <span class="text-2xl">📜</span>
+                    </div>
+
+                    <div id="poem-text-content" class="font-medium">
+                        <!-- النص يتم حقنه هنا بأمان -->
+                    </div>
+
+                    <div class="pt-4 text-left">
+                        <p class="font-black text-rose-600 text-lg">
+                            عمر ❤️✨
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. قسم الظرف السري الأساسي (رسالة من القلب) -->
+        <section class="pt-2 pb-8">
+            <!-- حالة الظرف المغلق -->
+            <div id="closed-envelope" onclick="openEnvelope()" class="envelope-wrapper bg-gradient-to-br from-rose-100 via-pink-50 to-amber-50 rounded-3xl p-8 sm:p-10 border-2 border-dashed border-pink-300 shadow-lg text-center space-y-4">
+                <div class="wax-seal mx-auto">
+                    <span class="text-2xl">💌</span>
+                </div>
+                <h3 class="text-xl sm:text-2xl font-black text-gray-800">
+                    رسالة خاصة ليكي من القلب ❤️
+                </h3>
+                <p class="text-pink-600 font-bold text-sm">
+                    اضغطي هنا لفتح الظرف ✨
+                </p>
+            </div>
+
+            <!-- حالة الرسالة المفتوحة (مخفية في البداية) -->
+            <div id="opened-letter" class="hidden bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-pink-200 space-y-6 relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-24 h-24 bg-pink-100 rounded-bl-full opacity-50"></div>
+                <div class="absolute bottom-0 left-0 w-24 h-24 bg-amber-100 rounded-tr-full opacity-50"></div>
+                
+                <div class="relative z-10 space-y-4 text-right leading-loose text-gray-700 text-base sm:text-lg">
+                    <div class="flex items-center justify-between border-b border-pink-100 pb-3">
+                        <span class="font-black text-pink-600 text-xl">إلى أغلى إنسانة في حياتي 💖</span>
+                        <span class="text-2xl">🌹</span>
+                    </div>
+
+                    <p class="font-medium">
+                        النهاردة يومك إنتي وبس.. ومش طالب منك أي حاجة في الدنيا غير إني أشوفك مبسوطة ومرتاحة وبتضحكي من قلبك 😊✨
+                    </p>
+
+                    <p class="font-medium">
+                        كل سنة وإنتي منورة الدنيا يا حبيبي.. مهما اختلفنا أو زعلنا من بعض، بيفضل يوم ميلادك هو أحلى يوم في السنة بالنسبة لي لأنه اليوم اللي جابك للدنيا. كل سنة وإنتي طيبة يا حبيبتي، ويارب السنة دي تراضيكي وتفرح قلبك بكل حاجة حلوة 🎂🎈💖
+                    </p>
+
+                    <div class="pt-4 text-left">
+                        <p class="font-black text-pink-600 text-lg">
+                            من حبيبك عمر ❤️✨
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- تذييل بسيط -->
+        <footer class="text-center text-gray-400 text-xs pb-6">
+            صُنع بكل حب مخصوص عشان لولتي 💕🎂
+        </footer>
+
+    </div>
+
+    <script>
+        // إدراج نص القصيدة بأمان تام لمنع أي أخطاء في العرض
+        document.getElementById('poem-text-content').innerText = 
+`في ليل ميلادكِ الساحر حيث النجومُ سُكارى 🌌
+والصمتُ يرقصُ لحناً في عينيَّ وفي الشِريان 💓
+أنتِ الهدايا وأنتِ العيد وأنتِ كلُّ الأشياء 🌸
+ميلادُكِ اليومَ ميلادي وفيـهِ يبدأُ الزمان ⏳
+
+يا عشيقتي يا نبضَ قلبي الذي لا يهدأ 🩺
+يا جنةَ الروحِ يا مَن فيها كُلُّ الأمان 🛡️
+أكتبُ الآنَ قصيدةً ليست حُروفاً بل دَماً 🖋️
+أُسطورةً تحكي هَوايا وتروي صِدقَ الهَيَمان 🔥
+
+اليومَ يومُكِ يا فاتنةَ العُمرِ يا ضوءَ العين 👀
+كلُّ عامٍ وأنتِ أغلى مِن كُلِّ ما حَوَى الكون 🌍
+وكلُّ عامٍ وأنتِ لي وحدي وتاجُ الرأسِ واليدين 👑
+أنتِ القدَر أنتِ المصير أنتِ السرُّ والمَكنون 🔐
+
+أُحِبُّكِ يا عِشْقِي حُباً يفوقُ حَدَّ التصوّر 💫
+حُباً يسافرُ في الأبعادِ يَهزمُ كُلَّ الظنون 🦅
+أنتِ المَدى أنتِ الأزل أنتِ الحَياةُ والمَحْشر ✨
+أنتِ القصيدةُ التي لا تنتهي أنتِ بَحرٌ مِن الفُنون 🌊
+
+بموتْ فيكِي يا مَراتي يا سَكنِي ويا استقراري 💍
+يا مَن إذا غابتْ شُعاعُها أضحى العالمُ سُكون 🌙
+أنتِ الزوجةُ الحبيبةُ أنتِ الصديقةُ يا نهاري ☀️
+في مَحرابِ عينيكِ أُصلي وبِحضنكِ أجدُ المَعون 🙏
+
+أشتاقُ لَكِ وشوقي نارٌ تُحرِقُ أضلُعي بلا خجل 🔥
+أُرسلُ قُبلةً خفيَّةً تَهبطُ على شِفاهِكِ في عجل 💋
+كَي تُعلِنَ أنَّ هذا القلبَ لم يَعرفْ سِواكِ مَثَل 💓
+بِكلِّ حَرفٍ في اسمِكِ أُرسلُ ألفَ أحبِّكِ ياعشيقتي 🌹
+بِكلِّ نَفسٍ أتنفسُهُ أُقسِمُ أنَّكِ مَصدرُ الأمل ✨
+ماذا أقولُ فيكِ والشِعرُ يَخجلُ مِن عَذوبَتِكِ 📖
+أنتِ الملاكُ الذي نزلَ لتُصبِحَ الحياةُ عَسَل 🍯
+
+يا وردةً فَتَحَتْ في قلبي وعبقُها مَلأَ الكيان 🌷
+يا سِرَّ ابتسامتي الدائمة يا مَنْ سِحْرُها لا يُخان 💫
+عيناكِ قصائدُ شَعْرُكِ ليلٌ ووجهُكِ قِطعةٌ مِن جِنان 🌌
+أعشقُكِ يا أجمَلَ مَن رأتْ عيني في كلِّ زمانٍ مكان 🕰️
+فلتصحو الدُنيا لِتُبارِك ولِتُنشِد الطيورُ أحلى الألحان 🐦
+ميلادُكِ هو وعدٌ مِن الله بأنَّ الحُبَّ ما زالَ سُلطان 👑
+كلُ عامٍ وأنتِ عُمري وبِجواري أُنسي والأمان 🏡
+أحتفلُ بوجودِكِ يا روحي يا أغلَى مِن كُلِّ إنسان 💖
+
+لأجلِ عينيكِ سأبقى عاشقاً هائِماً مُتيَّماً 🌹
+سأظلُّ أُهمسُ أُحِبُّكِ يا عشيقتي حتى يَنتهي الأجَل ♾️
+يا زَوجَتي يا سيدةَ القلبِ يا مَن أُسميها نَجْمَتي ⭐
+أنتِ الحَياةُ والمَلاذُ وأنتِ كُلُّ الغَرام والأمل 🌊
+بموت فيكي... بحبك يا عشيقتي... كل سنة وأنتِ كل الخير ليا 🫂👀♥️`;
+
+        // توليد الإيموشنز المتطايرة في الخلفية
+        function createFloatingEmojis() {
+            const container = document.getElementById('floating-emojis');
+            const emojis = ['❤️', '💖', '✨', '🎂', '🎈', '🌸', '💕', '🥳', '🦋'];
+            const count = 22;
+
+            for (let i = 0; i < count; i++) {
+                const el = document.createElement('span');
+                el.className = 'floating-emoji';
+                el.innerText = emojis[i % emojis.length];
+                el.style.left = Math.random() * 100 + 'vw';
+                el.style.fontSize = (Math.random() * 14 + 16) + 'px';
+                el.style.animationDuration = (Math.random() * 8 + 10) + 's';
+                el.style.animationDelay = (Math.random() * 10) + 's';
+                container.appendChild(el);
+            }
+        }
+        createFloatingEmojis();
+
+        // قائمة شاملة تدمج كل الكروت القديمة والجديدة
+        const reasonsILoveYou = [
+            "ضحكتك اللي بتنور الدنيا وبتنسيّني أي تعب في ثانية 😊✨",
+            "طيبة قلبك وحنيتك اللي مفيش زيها في الدنيا 💖🌸",
+            "اهتمامك بأبسط التفاصيل اللي بتفرق معايا جداً 🥹💕",
+            "وجودك جنبي اللي بيحسسني بالأمان والراحة دايماً 🤍🏡",
+            "عنادك اللطيف ورخامتك اللي بحبها مهما حصل 😜❤️",
+            "صوتك اللي بيطمن قلبي من أول كلمة بسمعها منك 🎶🥰",
+            "إنك دايماً بتكوني سبب فرحتي وأحلى حاجة في يومي ☀️🌷",
+            "جمال روحك وبراءتك اللي بتخليني أحبك كل يوم أكتر من اللي قبله 👑✨",
+            "لما بتفرحي من قلبك وعيونك بتلمع زي الأطفال 😍🎈",
+            "طريقة كلامك وعفويتك اللي بتخطف قلبي في كل مرة 💬💓",
+            "إنك بتفهميني من غير ما أتكلم وبتحسي بيا دايماً 🫂❤️",
+            "كل لحظة حلوة عشناها سوا وكل ذكرى جمعتنا ومستني نكملها سوا 🌹💍"
+        ];
+
+        let currentCardIndex = -1;
+        let isCardFlipped = false;
+
+        // دالة تقليب الكارت الواحد وعرض الجملة التالية في كل مرة
+        function flipLoveCard() {
+            const card = document.getElementById('love-jar-card');
+            const reasonText = document.getElementById('card-reason-text');
+            const counterBack = document.getElementById('card-counter-back');
+            const counterFront = document.getElementById('card-counter-front');
+            const frontTitle = document.getElementById('card-front-title');
+            const frontSub = document.getElementById('card-front-subtitle');
+
+            if (!isCardFlipped) {
+                currentCardIndex = (currentCardIndex + 1) % reasonsILoveYou.length;
+                reasonText.innerText = reasonsILoveYou[currentCardIndex];
+                counterBack.innerText = `سبب #${currentCardIndex + 1} من ${reasonsILoveYou.length} 💖`;
+                card.classList.add('flipped');
+                isCardFlipped = true;
+            } else {
+                const nextNum = ((currentCardIndex + 1) % reasonsILoveYou.length) + 1;
+                frontTitle.innerText = "لسه فيه كلام حلو ليكي 💌";
+                frontSub.innerText = "اضغطي تاني عشان تشوفي السبب اللي بعده ✨";
+                counterFront.innerText = `${nextNum} / ${reasonsILoveYou.length}`;
+                card.classList.remove('flipped');
+                isCardFlipped = false;
+            }
+        }
+
+        let candleBlown = false;
+
+        // دالة إطفاء الشمعة وتشغيل الاحتفال والموسيقى
+        function blowCandle() {
+            if (candleBlown) return;
+            candleBlown = true;
+
+            const flame = document.getElementById('flame');
+            flame.classList.add('out');
+
+            document.getElementById('cake-instruction').innerText = "✨ اتحققت الأمنية بإذن الله ✨";
+            document.getElementById('mic-btn').classList.add('hidden');
+            
+            const wishBox = document.getElementById('birthday-wish-box');
+            wishBox.classList.remove('hidden');
+
+            launchConfetti();
+            playBirthdayTune();
+        }
+
+        function launchConfetti() {
+            const duration = 3500;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 5,
+                    angle: 60,
+                    spread: 55,
+                    origin: { x: 0 },
+                    colors: ['#ec4899', '#f43f5e', '#fbbf24', '#a855f7']
+                });
+                confetti({
+                    particleCount: 5,
+                    angle: 120,
+                    spread: 55,
+                    origin: { x: 1 },
+                    colors: ['#ec4899', '#f43f5e', '#fbbf24', '#a855f7']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        async function playBirthdayTune() {
+            try {
+                await Tone.start();
+                const synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: "triangle" },
+                    envelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.8 }
+                }).toDestination();
+
+                const notes = [
+                    { note: "C4", time: 0, dur: "8n" },
+                    { note: "C4", time: 0.3, dur: "8n" },
+                    { note: "D4", time: 0.6, dur: "4n" },
+                    { note: "C4", time: 1.1, dur: "4n" },
+                    { note: "F4", time: 1.6, dur: "4n" },
+                    { note: "E4", time: 2.1, dur: "2n" },
+
+                    { note: "C4", time: 2.9, dur: "8n" },
+                    { note: "C4", time: 3.2, dur: "8n" },
+                    { note: "D4", time: 3.5, dur: "4n" },
+                    { note: "C4", time: 4.0, dur: "4n" },
+                    { note: "G4", time: 4.5, dur: "4n" },
+                    { note: "F4", time: 5.0, dur: "2n" },
+
+                    { note: "C4", time: 5.8, dur: "8n" },
+                    { note: "C4", time: 6.1, dur: "8n" },
+                    { note: "C5", time: 6.4, dur: "4n" },
+                    { note: "A4", time: 6.9, dur: "4n" },
+                    { note: "F4", time: 7.4, dur: "4n" },
+                    { note: "E4", time: 7.9, dur: "4n" },
+                    { note: "D4", time: 8.4, dur: "2n" },
+
+                    { note: "Bb4", time: 9.2, dur: "8n" },
+                    { note: "Bb4", time: 9.5, dur: "8n" },
+                    { note: "A4", time: 9.8, dur: "4n" },
+                    { note: "F4", time: 10.3, dur: "4n" },
+                    { note: "G4", time: 10.8, dur: "4n" },
+                    { note: "F4", time: 11.3, dur: "2n" }
+                ];
+
+                const now = Tone.now();
+                notes.forEach(n => {
+                    synth.triggerAttackRelease(n.note, n.dur, now + n.time);
+                });
+            } catch (e) {
+                console.log("Audio play skipped:", e);
+            }
+        }
+
+        async function enableMic() {
+            const micBtn = document.getElementById('mic-btn');
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                micBtn.innerHTML = "<span>انفخي في المايك دلوقتي!</span> 🌬️✨";
+                micBtn.classList.remove('from-pink-500', 'to-rose-500');
+                micBtn.classList.add('from-emerald-500', 'to-teal-500');
+
+                const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+                const source = audioContext.createMediaStreamSource(stream);
+                const analyser = audioContext.createAnalyser();
+                analyser.fftSize = 256;
+                source.connect(analyser);
+
+                const dataArray = new Uint8Array(analyser.frequencyBinCount);
+
+                function detectBlow() {
+                    if (candleBlown) {
+                        stream.getTracks().forEach(track => track.stop());
+                        return;
+                    }
+                    analyser.getByteFrequencyData(dataArray);
+                    let sum = 0;
+                    for (let i = 0; i < dataArray.length; i++) {
+                        sum += dataArray[i];
+                    }
+                    const average = sum / dataArray.length;
+
+                    if (average > 45) {
+                        blowCandle();
+                        stream.getTracks().forEach(track => track.stop());
+                    } else {
+                        requestAnimationFrame(detectBlow);
+                    }
+                }
+                detectBlow();
+            } catch (err) {
+                micBtn.innerHTML = "<span>دوسي على التورتة لإطفاء الشمعة</span> 👆🎂";
+            }
+        }
+
+        function openPoemEnvelope() {
+            document.getElementById('closed-poem-envelope').classList.add('hidden');
+            document.getElementById('opened-poem-letter').classList.remove('hidden');
+            confetti({
+                particleCount: 40,
+                spread: 70,
+                origin: { y: 0.6 },
+                colors: ['#f43f5e', '#fbbf24', '#ec4899']
+            });
+        }
+
+        function openEnvelope() {
+            document.getElementById('closed-envelope').classList.add('hidden');
+            document.getElementById('opened-letter').classList.remove('hidden');
+            confetti({
+                particleCount: 40,
+                spread: 70,
+                origin: { y: 0.7 },
+                colors: ['#ec4899', '#fbbf24', '#f43f5e']
+            });
+        }
+    </script>
+</body>
+</html>
